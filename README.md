@@ -1,4 +1,4 @@
-# Game bot with OpenCV 
+# OpenCV ile Oyun Botu
 
 Python'da görüntü işleme modülü olan OpenCV ile oyun(metin2) içi nesne algılaması.
 
