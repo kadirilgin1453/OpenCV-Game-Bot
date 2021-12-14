@@ -2,7 +2,8 @@
 
 Python'da görüntü işleme modülü olan OpenCV ile oyun(metin2) içi nesne algılaması.
 
-Kullanılan modüller: OpenCV & PyAutoGui
+Kullanılan modüller: OpenCV & PyAutoGui 
+
 Oyun içi klavye çalışmıyorsa scripti yönetici olarak çalıştırmayı deneyin.
 
 
