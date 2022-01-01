@@ -9,11 +9,7 @@ from vision import Vision
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 # Pencere başlığı sürekli değiştiği için tüm başlıkları tek tek yazdım.
-baslik = ("Rohan2 - İlk Günkü Tutku ile! | Discord : https://discord.gg/sGJhpvG",
-"Rohan2 - Tüm Teçhizatlarını Son Seviyeye Getir! | Forum: https://board.rohan2.global",
-"Rohan2 - Amansız Patronları Yen! | Wiki: https://wiki.rohan2.global",
-"Rohan2 - Eğlenerek Zevkle Vakit Geçir! | https://rohan2.global",
-"Rohan2 - Farkı Hisset! | Anasayfa: https://rohan2.global")
+baslik = ("Sunucu Adını Giriniz >>>>> ")
 
 # Pencerenin başlığı eşleşene kadar dönüyor.
 for i in baslik:
