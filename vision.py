@@ -50,9 +50,7 @@ class Vision:
         rectangles = []
         for loc in locations:
             rect = [int(loc[0]), int(loc[1]), self.needle_w, self.needle_h]
-            # Add every box to the list twice in order to retain single (non-overlapping) boxes
-            rectangles.append(rect)
-            rectangles.append(rect)
+            rectangles.extend((rect, rect))
         # Apply group rectangles.
         # The groupThreshold parameter should usually be 1. If you put it at 0 then no grouping is
         # done. If you put it at 2 then an object needs at least 3 overlapping rectangles to appear
@@ -72,17 +70,7 @@ class Vision:
     # given a list of [x, y, w, h] rectangles returned by find(), convert those into a list of
     # [x, y] positions in the center of those rectangles where we can click on those found items
     def get_click_points(self, rectangles):
-        points = []
-
-        # Loop over all the rectangles
-        for (x, y, w, h) in rectangles:
-            # Determine the center position
-            center_x = x + int(w/2)
-            center_y = y + int(h/2)
-            # Save the points
-            points.append((center_x, center_y))
-
-        return points
+        return [(x + int(w/2), y + int(h/2)) for x, y, w, h in rectangles]
 
     # given a list of [x, y, w, h] rectangles and a canvas image to draw on, return an image with
     # all of those rectangles drawn
@@ -205,10 +193,7 @@ class Vision:
         mask = cv2.inRange(hsv, lower, upper)
         result = cv2.bitwise_and(hsv, hsv, mask=mask)
 
-        # convert back to BGR for imshow() to display it properly
-        img = cv2.cvtColor(result, cv2.COLOR_HSV2BGR)
-
-        return img
+        return cv2.cvtColor(result, cv2.COLOR_HSV2BGR)
 
     # given an image and a Canny edge filter, apply the filter and return the resulting image.
     # if a filter is not supplied, the control GUI trackbars will be used
@@ -224,10 +209,7 @@ class Vision:
         # canny edge detection
         result = cv2.Canny(dilated_image, edge_filter.canny1, edge_filter.canny2)
 
-        # convert single channel image back to BGR
-        img = cv2.cvtColor(result, cv2.COLOR_GRAY2BGR)
-
-        return img
+        return cv2.cvtColor(result, cv2.COLOR_GRAY2BGR)
 
     # apply adjustments to an HSV channel
     # https://stackoverflow.com/questions/49697363/shifting-hsv-pixel-values-in-python-using-numpy
@@ -265,21 +247,18 @@ class Vision:
         except cv2.error:
             return None, None, [], [], None
 
-        # store all the good matches as per Lowe's ratio test.
-        good = []
         points = []
 
-        for pair in matches:
-            if len(pair) == 2:
-                if pair[0].distance < 0.7*pair[1].distance:
-                    good.append(pair[0])
-
+        good = [
+            pair[0]
+            for pair in matches
+            if len(pair) == 2 and pair[0].distance < 0.7 * pair[1].distance
+        ]
         if len(good) > min_match_count:
             print('match %03d, kp %03d' % (len(good), len(keypoints_needle)))
-            for match in good:
-                points.append(keypoints_haystack[match.trainIdx].pt)
-            #print(points)
-        
+            points.extend(keypoints_haystack[match.trainIdx].pt for match in good)
+                #print(points)
+
         return keypoints_needle, keypoints_haystack, good, points
 
     def centeroid(self, point_list):
